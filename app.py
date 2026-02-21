@@ -652,12 +652,6 @@ if active_tab == "Data & Analisis":
     st.plotly_chart(fig, use_container_width=True)
 
     
-    fig.add_trace(go.Bar(x=df["date"], y=df["precipitation"], name="Precipitation", marker_color="rgba(44,160,44,0.3)"), secondary_y=True)
-    fig.add_trace(go.Scatter(x=df["date"], y=df["et0"], name="ET0 (mm)", line=dict(color="#9467bd", width=1.5, dash="dash")), secondary_y=False)
-    fig.update_layout(title="Flowrate, ET0 & Precipitation", height=500, hovermode="x unified")
-    fig.update_yaxes(title_text="Flowrate / ET0", secondary_y=False)
-    fig.update_yaxes(title_text="Precipitation (mm)", secondary_y=True)
-    st.plotly_chart(fig, use_container_width=True)
 
     st.subheader("Lag Correlation: Variabel Cuaca → Flowrate")
     lag_results = {}
