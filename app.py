@@ -792,7 +792,12 @@ elif active_tab == "Model & Forecast":
         ))
         fig_fc.update_layout(title="Flowrate Forecast", xaxis_title="Date", yaxis_title="Flowrate", height=450)
         st.plotly_chart(fig_fc, use_container_width=True)
-
+        st.subheader("Tabel Forecast Flowrate (Preview)")
+        cols = ["date", "forecast_flowrate", "lower_95", "upper_95"]
+        preview_fc = fc_df[cols].copy()
+        preview_fc["date"] = preview_fc["date"].dt.strftime("%Y-%m")
+        st.dataframe(preview_fc, use_container_width=True, hide_index=True)
+        
         if has_water_level and "water_forecast_results" in st.session_state:
             wr = st.session_state.water_forecast_results
             w_res = wr["results"]
@@ -815,6 +820,11 @@ elif active_tab == "Model & Forecast":
             ))
             fig_w.update_layout(title="Water Level Forecast", xaxis_title="Date", yaxis_title="Water Level", height=450)
             st.plotly_chart(fig_w, use_container_width=True)
+            st.subheader("Tabel Forecast Water Level (Preview)")
+            cols_w = ["date", "forecast_water_level", "lower_95", "upper_95"]
+            preview_w = w_fc_df[cols_w].copy()
+            preview_w["date"] = preview_w["date"].dt.strftime("%Y-%m")
+            st.dataframe(preview_w, use_container_width=True, hide_index=True)
 
 
 elif active_tab == "Input Data Baru":
