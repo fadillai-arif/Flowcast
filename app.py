@@ -642,6 +642,16 @@ if active_tab == "Data & Analisis":
     st.subheader("Data Flowrate & Cuaca")
     fig = make_subplots(specs=[[{"secondary_y": True}]])
     fig.add_trace(go.Scatter(x=df["date"], y=df["flowrate"], name="Flowrate", line=dict(color="#1f77b4", width=2)), secondary_y=False)
+    if has_water_level and "water_level" in df.columns:
+        fig.add_trace(go.Scatter(x=df["date"], y=df["water_level"], name="Water Level", line=dict(color="#2ca02c", width=2)), secondary_y=False)
+    fig.add_trace(go.Bar(x=df["date"], y=df["precipitation"], name="Precipitation", marker_color="rgba(44,160,44,0.3)"), secondary_y=True)
+    fig.add_trace(go.Scatter(x=df["date"], y=df["et0"], name="ET0 (mm)", line=dict(color="#9467bd", width=1.5, dash="dash")), secondary_y=False)
+    fig.update_layout(title="Flowrate, Water Level, ET0 & Precipitation", height=500, hovermode="x unified")
+    fig.update_yaxes(title_text="Flowrate / Water Level / ET0", secondary_y=False)
+    fig.update_yaxes(title_text="Precipitation (mm)", secondary_y=True)
+    st.plotly_chart(fig, use_container_width=True)
+
+    
     fig.add_trace(go.Bar(x=df["date"], y=df["precipitation"], name="Precipitation", marker_color="rgba(44,160,44,0.3)"), secondary_y=True)
     fig.add_trace(go.Scatter(x=df["date"], y=df["et0"], name="ET0 (mm)", line=dict(color="#9467bd", width=1.5, dash="dash")), secondary_y=False)
     fig.update_layout(title="Flowrate, ET0 & Precipitation", height=500, hovermode="x unified")
@@ -669,9 +679,12 @@ if active_tab == "Data & Analisis":
     st.subheader("Data Tabel")
     display_df = df.copy()
     display_df["date"] = display_df["date"].dt.strftime("%Y-%m")
-    show_cols = ["date", "flowrate"] + WEATHER_VARS
+    show_cols = ["date", "flowrate"]
+    if has_water_level and "water_level" in display_df.columns:
+        show_cols.append("water_level")
     if "rainfall" in display_df.columns:
-        show_cols.insert(2, "rainfall")
+        show_cols.append("rainfall")
+    show_cols += WEATHER_VARS
     st.dataframe(display_df[show_cols], use_container_width=True, hide_index=True)
 
 elif active_tab == "Stationarity Check":
