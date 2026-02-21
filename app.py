@@ -601,16 +601,13 @@ has_water_level = site_config.get("has_water_level", False)
 st.title(f"Forecasting {selected_site}")
 st.markdown(f"Analisis dan prediksi {'flowrate & water level' if has_water_level else 'flowrate'} berdasarkan data cuaca dari Open-Meteo (precipitation, evapotranspiration).")
 
-if "added_rows" not in st.session_state:
+if "added_rows" not in st.session_state or st.session_state.get("_last_site") != selected_site:
     st.session_state.added_rows = load_added_data(site_config["added_data_file"])
-
-    if st.session_state.get("_last_site") != selected_site:
-        st.session_state.added_rows = load_added_data(site_config["added_data_file"])
-        if "forecast_results" in st.session_state:
-            del st.session_state.forecast_results
-        if "water_forecast_results" in st.session_state:
-            del st.session_state.water_forecast_results
-        st.session_state._last_site = selected_site
+    if "forecast_results" in st.session_state:
+        del st.session_state.forecast_results
+    if "water_forecast_results" in st.session_state:
+        del st.session_state.water_forecast_results
+    st.session_state._last_site = selected_site
 
 with st.spinner("Mengambil data cuaca dari Open-Meteo..."):
     try:
@@ -837,7 +834,7 @@ elif active_tab == "Input Data Baru":
                 d = st.text_input(f"Date {i+1} (YYYY-MM)", value=next_dates[i].strftime("%Y-%m"), key=f"date_{i}")
                 input_dates.append(d)
             with c2:
-                f = st.number_input(f"Flowrate {i+1}", min_value=0.0, max_value=100.0, value=0.0, step=0.01, key=f"flow_{i}")
+                f = st.number_input(f"Flowrate {i+1}", min_value=0.0, max_value=1000.0, value=0.0, step=0.01, key=f"flow_{i}")
                 input_flowrates.append(f)
 
         submitted_data = st.form_submit_button("Tambah Semua Data", type="primary", use_container_width=True)
